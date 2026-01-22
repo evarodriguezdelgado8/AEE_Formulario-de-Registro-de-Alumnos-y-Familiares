@@ -54,3 +54,30 @@ h4 {
 .btn-registrarse:hover {
     transform: translateY(-2px);
 }
+
+/* --- CAMBIOS PARA QUE EL TEXTO DE AYUDA SE VEA GRIS CLARITO --- */
+
+/* 1. Esto cambia el color del texto cuando el campo está vacío (el 'placeholder' visual) */
+.form-floating > label {
+    color: #adb5bd !important; /* Gris clarito */
+    opacity: 1; /* Nos aseguramos de que se vea el color que queremos */
+}
+
+/* 2. Opcional: Cuando haces clic y el texto sube, que se ponga de tu color azul */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+    color: #4a90e2 !important; /* Tu azul corporativo */
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+/* 3. Para los desplegables (selects), forzar el color gris si no se ha elegido nada */
+.form-floating > .form-select {
+    color: #2c3e50; /* Color del texto elegido (oscuro) */
+}
+
+/* 4. Asegurarnos que el input real tenga texto oscuro al escribir */
+.form-control {
+    color: #2c3e50 !important;
+}

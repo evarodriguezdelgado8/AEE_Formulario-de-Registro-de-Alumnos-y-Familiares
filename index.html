@@ -7,7 +7,56 @@
     <title>Registro Alumnos Pro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* --- 1. ETIQUETA (LABEL) SIEMPRE ARRIBA Y AZUL --- */
+        .form-floating > label {
+            /* Forzamos la posición "flotante" (arriba y pequeña) */
+            transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem) !important;
+            color: #0d6efd !important; /* Azul siempre */
+            opacity: 1 !important;
+            font-weight: 600;
+            background-color: transparent !important; /* Fondo transparente */
+            height: auto; /* Ajuste para que no tape el texto */
+        }
+
+        /* --- 2. TEXTO DE EJEMPLO (PLACEHOLDER) VISIBLE Y GRIS --- */
+        /* Bootstrap oculta el placeholder por defecto, aquí lo obligamos a mostrarse */
+        .form-floating > .form-control::placeholder {
+            color: #adb5bd !important; /* Gris clarito */
+            opacity: 1 !important;     /* VISIBLE SIEMPRE */
+        }
+        
+        /* Ajuste para que el texto que escribes no se monte encima del placeholder */
+        .form-floating > .form-control {
+            padding-top: 1.625rem;
+            padding-bottom: 0.625rem;
+        }
+
+        /* --- 3. ESTILOS DE FOCO (Bordes Azules) --- */
+        .form-control:focus,
+        .form-select:focus,
+        .checkbox-container:focus-within {
+            border-color: #0d6efd !important;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+        }
+
+        /* --- 4. CHECKBOXES Y OTROS --- */
+        .checkbox-container {
+            min-height: 100px; max-height: 150px; overflow-y: auto;
+            padding: 10px; border: 1px solid #dee2e6; border-radius: 0.375rem;
+            background-color: white; transition: all 0.2s;
+        }
+        .card { border-radius: 15px; }
+        
+        /* Títulos de secciones especiales en azul para combinar */
+        .titulo-azul {
+            color: #0d6efd !important;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 5px; display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -17,68 +66,67 @@
             <div class="col-lg-10">
                 <h1 class="text-center mb-5"><i class="bi bi-mortarboard-fill text-primary"></i> Alta de Alumno</h1>
 
-                <form id="formRegistro" class="card p-5 shadow-lg">
+                <form id="formRegistro" class="card p-5 shadow-lg border-0">
 
-                    <h4 class="mb-4"><i class="bi bi-person-circle"></i> 1. Datos del Alumno</h4>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="nombre" placeholder="Nombre" required>
-                                <label for="nombre">Nombre</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="apellidos" placeholder="Apellidos" required>
-                                <label for="apellidos">Apellidos</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="nif" placeholder="DNI" required>
-                                <label for="nif">NIF (12345678L)</label>
-                            </div>
-                            <div id="errorNif" class="text-danger small ms-2 mt-1"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="lenguaMaterna" required></select>
-                                <label for="lenguaMaterna">Lengua Materna</label>
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label fw-bold text-secondary small">Idiomas Conocidos (Selecciona
-                                varios)</label>
-                            <div id="containerIdiomas" class="checkbox-container"></div>
-                        </div>
-                    </div>
-
-                    <hr class="my-5 opacity-25">
-
-                    <h4 class="mb-4"><i class="bi bi-people-fill"></i> 2. Familiares Asociados</h4>
-
-                    <div class="card card-body bg-light mb-3 border border-primary-subtle shadow-sm">
-                        <h6 class="text-primary mb-3">Familiar Principal (Obligatorio)</h6>
+                    <h4 class="mb-3"><i class="bi bi-person-circle"></i> 1. Datos del Alumno</h4>
+                    
+                    <div class="card card-body bg-light mb-4 border border-primary-subtle shadow-sm">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="famNombre" placeholder="Nombre"
-                                        required>
-                                    <label for="famNombre">Nombre</label>
+                                    <input type="text" class="form-control" id="nombre" placeholder="Ej: Juan" required>
+                                    <label for="nombre">Nombre</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="famApellidos" placeholder="Apellidos"
-                                        required>
-                                    <label for="famApellidos">Apellidos</label>
+                                    <input type="text" class="form-control" id="apellidos" placeholder="Ej: Pérez García" required>
+                                    <label for="apellidos">Apellidos</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="nif" placeholder="Ej: 12345678Z" required>
+                                    <label for="nif">NIF</label>
+                                </div>
+                                <div id="errorNif" class="text-danger small ms-2 mt-1"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="lenguaMaterna" required></select>
+                                    <label for="lenguaMaterna">Lengua Materna</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <span class="titulo-azul">Idiomas Conocidos</span>
+                                <div id="containerIdiomas" class="checkbox-container"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 opacity-25">
+
+                    <h4 class="mb-3"><i class="bi bi-people-fill"></i> 2. Familiares Asociados</h4>
+                    
+                    <div class="card card-body bg-light mb-3 border border-primary-subtle shadow-sm">
+                        <h6 class="text-primary mb-3 fw-bold">Familiar Principal (Obligatorio)</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="famNombre" placeholder="Ej: María" required>
+                                    <label for="famNombre">Nombre Familiar</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="famApellidos" placeholder="Ej: López" required>
+                                    <label for="famApellidos">Apellidos Familiar</label>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="famNif" placeholder="NIF" required>
-                                    <label for="famNif">NIF</label>
+                                    <input type="text" class="form-control" id="famNif" placeholder="Ej: 87654321X" required>
+                                    <label for="famNif">NIF Familiar</label>
                                 </div>
                                 <div id="errorFamNif" class="text-danger small ms-2 mt-1"></div>
                             </div>
@@ -100,98 +148,102 @@
                     <div id="familiaresExtraContainer"></div>
 
                     <div class="d-flex justify-content-end mb-4">
-                        <button type="button" id="btnAnadirFamiliar"
-                            class="btn btn-outline-primary btn-sm rounded-pill">
+                        <button type="button" id="btnAnadirFamiliar" class="btn btn-outline-primary btn-sm rounded-pill">
                             <i class="bi bi-plus-circle"></i> Añadir otro familiar
                         </button>
                     </div>
 
-                    <hr class="my-5 opacity-25">
+                    <hr class="my-4 opacity-25">
 
-                    <h4 class="mb-4"><i class="bi bi-geo-alt-fill"></i> 3. Dirección Actual</h4>
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <div class="form-floating">
-                                <select class="form-select" id="pais" required>
-                                    <option value="">Cargando...</option>
-                                </select>
-                                <label>País</label>
+                    <h4 class="mb-3"><i class="bi bi-geo-alt-fill"></i> 3. Dirección Actual</h4>
+                    
+                    <div class="card card-body bg-light mb-4 border border-primary-subtle shadow-sm">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="pais" required>
+                                        <option value="">Cargando...</option>
+                                    </select>
+                                    <label for="pais">País</label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-floating">
-                                <select class="form-select" id="ciudad" required disabled></select>
-                                <label>Ciudad</label>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ciudad" required disabled></select>
+                                    <label for="ciudad">Ciudad</label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-floating">
-                                <select class="form-select" id="poblacion" required disabled></select>
-                                <label>Población</label>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="poblacion" required disabled></select>
+                                    <label for="poblacion">Población</label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="direccion" placeholder="Calle" required>
-                                <label>Dirección Completa</label>
+                            <div class="col-md-8">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="direccion" placeholder="Ej: C/ Mayor 12, 3ºA" required>
+                                    <label for="direccion">Dirección Completa</label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="cp" placeholder="CP" required>
-                                <label>Código Postal</label>
-                            </div>
-                            <div id="errorCp" class="text-danger small ms-2 mt-1"></div>
-                        </div>
-                    </div>
-
-                    <hr class="my-5 opacity-25">
-
-                    <h4 class="mb-4"><i class="bi bi-book-half"></i> 4. Datos Académicos</h4>
-                    <div class="row g-3">
-                        <div class="col-md-12">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="colegio" placeholder="Colegio" required>
-                                <label>Colegio de Procedencia</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="nivelEstudios" required></select>
-                                <label>Nivel Alcanzado</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="nivelSolicitado" required></select>
-                                <label>Nivel Solicitado</label>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-bold text-secondary small">Idiomas Estudiados (Selecciona
-                                varios)</label>
-                            <div id="containerIdiomasEstudiados" class="checkbox-container"></div>
-                        </div>
-                    </div>
-
-                    <hr class="my-5 opacity-25">
-
-                    <h4 class="mb-4"><i class="bi bi-activity"></i> 5. Información Médica</h4>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-secondary small">Alergias</label>
-                            <div id="containerAlergias" class="checkbox-container"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating h-100">
-                                <textarea class="form-control h-100" id="medicacion"
-                                    placeholder="Medicación"></textarea>
-                                <label>Medicación Actual</label>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="cp" placeholder="Ej: 28001" required>
+                                    <label for="cp">Código Postal</label>
+                                </div>
+                                <div id="errorCp" class="text-danger small ms-2 mt-1"></div>
                             </div>
                         </div>
                     </div>
 
-                    <hr class="my-5">
+                    <hr class="my-4 opacity-25">
+
+                    <h4 class="mb-3"><i class="bi bi-book-half"></i> 4. Datos Académicos</h4>
+                    
+                    <div class="card card-body bg-light mb-4 border border-primary-subtle shadow-sm">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="colegio" placeholder="Ej: IES San Fernando" required>
+                                    <label for="colegio">Colegio de Procedencia</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="nivelEstudios" required></select>
+                                    <label for="nivelEstudios">Nivel Alcanzado</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="nivelSolicitado" required></select>
+                                    <label for="nivelSolicitado">Nivel Solicitado</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <span class="titulo-azul">Idiomas Estudiados</span>
+                                <div id="containerIdiomasEstudiados" class="checkbox-container"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 opacity-25">
+
+                    <h4 class="mb-3"><i class="bi bi-activity"></i> 5. Información Médica</h4>
+                    
+                    <div class="card card-body bg-light mb-5 border border-primary-subtle shadow-sm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <span class="titulo-azul">Alergias</span>
+                                <div id="containerAlergias" class="checkbox-container"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating h-100">
+                                    <textarea class="form-control h-100" id="medicacion" placeholder="Ej: Ibuprofeno si hay dolor..." style="min-height: 100px;"></textarea>
+                                    <label for="medicacion">Medicación Actual</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <button type="submit" class="btn btn-primary btn-lg w-100 py-3 btn-registrarse rounded-pill shadow">
                         <i class="bi bi-check-circle-fill me-2"></i> Registrar Alumno
