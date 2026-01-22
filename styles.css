@@ -1,83 +1,165 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
+
+
 body {
+
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+
     font-family: 'Poppins', sans-serif;
+
     min-height: 100vh;
+
 }
+
+
 
 .card {
+
     border: none;
+
     border-radius: 15px;
+
     background: rgba(255, 255, 255, 0.95);
+
 }
+
+
 
 h1 {
+
     color: #2c3e50;
+
     font-weight: 600;
+
 }
+
+
 
 h4 {
+
     color: #4a90e2; /* Azul moderno */
+
     font-weight: 600;
+
     margin-top: 10px;
+
     display: flex;
+
     align-items: center;
+
     gap: 10px;
+
 }
+
+
 
 /* Estilo para las cajas de checkboxes */
+
 .checkbox-container {
+
     max-height: 150px;
+
     overflow-y: auto;
+
     border: 1px solid #dee2e6;
+
     border-radius: 0.375rem;
+
     padding: 10px;
+
     background: #fff;
+
 }
+
+
 
 /* Scrollbar personalizado finito */
+
 .checkbox-container::-webkit-scrollbar {
+
     width: 6px;
-}
-.checkbox-container::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 4px;
+
 }
 
+.checkbox-container::-webkit-scrollbar-thumb {
+
+    background-color: #ccc;
+
+    border-radius: 4px;
+
+}
+
+
+
 /* Botón flotante animado */
+
 .btn-registrarse {
+
     transition: transform 0.2s;
+
     font-weight: 600;
+
     letter-spacing: 1px;
+
 }
+
 .btn-registrarse:hover {
+
     transform: translateY(-2px);
+
 }
+
+
 
 /* --- CAMBIOS PARA QUE EL TEXTO DE AYUDA SE VEA GRIS CLARITO --- */
 
+
+
 /* 1. Esto cambia el color del texto cuando el campo está vacío (el 'placeholder' visual) */
+
 .form-floating > label {
+
     color: #adb5bd !important; /* Gris clarito */
+
     opacity: 1; /* Nos aseguramos de que se vea el color que queremos */
+
 }
+
+
 
 /* 2. Opcional: Cuando haces clic y el texto sube, que se ponga de tu color azul */
+
 .form-floating > .form-control:focus ~ label,
+
 .form-floating > .form-control:not(:placeholder-shown) ~ label,
+
 .form-floating > .form-select ~ label {
+
     color: #4a90e2 !important; /* Tu azul corporativo */
+
     font-weight: 600;
+
     opacity: 0.8;
+
 }
+
+
 
 /* 3. Para los desplegables (selects), forzar el color gris si no se ha elegido nada */
+
 .form-floating > .form-select {
+
     color: #2c3e50; /* Color del texto elegido (oscuro) */
+
 }
 
+
+
 /* 4. Asegurarnos que el input real tenga texto oscuro al escribir */
+
 .form-control {
+
     color: #2c3e50 !important;
+
 }
