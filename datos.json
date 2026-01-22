@@ -1,0 +1,24 @@
+{
+  "lenguas": ["Español", "Gallego", "Catalán", "Euskera", "Inglés", "Francés", "Alemán", "Italiano"],
+  "idiomas": ["Inglés", "Francés", "Alemán", "Italiano", "Chino", "Japonés"],
+  "profesiones": ["Ingeniero", "Médico", "Docente", "Estudiante", "Abogado", "Administrativo", "Otro"],
+  "nivelesEstudio": ["ESO", "Bachillerato", "FP Grado Medio", "FP Grado Superior", "Grado Universitario", "Máster", "Doctorado"],
+  "alergias": ["Polen", "Ácaros", "Lactosa", "Gluten", "Frutos Secos", "Marisco", "Ninguna"],
+  "ubicaciones": [
+    {
+      "pais": "España",
+      "ciudades": [
+        { "nombre": "Sevilla", "poblaciones": ["Sevilla Capital", "Dos Hermanas", "Utrera"] },
+        { "nombre": "Madrid", "poblaciones": ["Madrid Capital", "Getafe", "Leganés"] },
+        { "nombre": "Barcelona", "poblaciones": ["Barcelona Capital", "Hospitalet", "Badalona"] }
+      ]
+    },
+    {
+      "pais": "Francia",
+      "ciudades": [
+        { "nombre": "París", "poblaciones": ["París Centro", "Versalles"] },
+        { "nombre": "Lyon", "poblaciones": ["Lyon Centro", "Villeurbanne"] }
+      ]
+    }
+  ]
+}
