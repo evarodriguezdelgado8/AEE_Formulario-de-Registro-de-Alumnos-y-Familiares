@@ -1,349 +1,283 @@
 /**
- * APP.JS - Versión Híbrida (Fijo + Dinámicos)
+ * APP.JS - VERSIÓN FINAL FUNCIONAL
+ * - JSON dinámico
+ * - Validaciones por eventos + regex
+ * - Builder + Prototype
+ * - Múltiples familiares
+ * - Modal resumen completo
  */
 
-// 1. CLASES Y BUILDER (Igual que siempre)
+/* =========================================================
+   1. CLASE ALUMNO (PROTOTYPE)
+========================================================= */
 function Alumno() {
     this.datosPersonales = {};
     this.familiares = [];
     this.direccion = {};
-    this.datosAcademicos = {}; 
+    this.datosAcademicos = {};
     this.datosMedicos = {};
 }
 
-Alumno.prototype.generarResumenHTML = function() {
-    const formatearArray = (arr) => (arr && arr.length > 0) ? arr.join(', ') : 'Ninguno';
-    
+Alumno.prototype.generarResumenHTML = function () {
+
+    const lista = arr => arr && arr.length ? arr.join(', ') : 'Ninguno';
+
     let familiaresHTML = '';
-    this.familiares.forEach((fam, i) => {
-        // Diferenciamos visualmente el principal del resto
-        const titulo = i === 0 ? "Familiar Principal" : `Familiar Extra #${i}`;
+    this.familiares.forEach((f, i) => {
         familiaresHTML += `
-            <div class="mb-2 p-2 border rounded bg-white">
-                <strong class="text-primary">${titulo}:</strong> ${fam.nombre} ${fam.apellidos}<br>
-                <small class="text-muted">${fam.profesion} - ${fam.ciudad} (NIF: ${fam.nif})</small>
-            </div>`;
+        <div class="border rounded p-2 mb-2 bg-white">
+            <strong>${i === 0 ? 'Familiar Principal' : 'Familiar Adicional'}:</strong><br>
+            ${f.nombre} ${f.apellidos} (NIF: ${f.nif})<br>
+            <small>
+                ${f.profesion} - ${f.ciudad}<br>
+                Lengua: ${f.lengua}<br>
+                Idiomas: ${lista(f.idiomas)}
+            </small>
+        </div>`;
     });
 
     return `
-        <div class="container-fluid">
-            <h6 class="text-primary border-bottom pb-2">Datos Personales</h6>
-            <p><strong>${this.datosPersonales.nombre} ${this.datosPersonales.apellidos}</strong> (NIF: ${this.datosPersonales.nif})</p>
-            
-            <h6 class="text-primary border-bottom pb-2 mt-4">Familiares Asociados (${this.familiares.length})</h6>
-            <div class="bg-light p-2 rounded">
-                ${familiaresHTML}
-            </div>
+    <h6 class="text-primary border-bottom">Datos del Alumno</h6>
+    <p>
+        <strong>${this.datosPersonales.nombre} ${this.datosPersonales.apellidos}</strong><br>
+        NIF: ${this.datosPersonales.nif}<br>
+        Lengua materna: ${this.datosPersonales.lengua}<br>
+        Idiomas: ${lista(this.datosPersonales.idiomas)}
+    </p>
 
-            <h6 class="text-primary border-bottom pb-2 mt-4">Dirección</h6>
-            <p>${this.direccion.calle}, ${this.direccion.poblacion} (${this.direccion.pais})</p>
-            
-            <h6 class="text-primary border-bottom pb-2 mt-4">Académico y Salud</h6>
-            <p>Estudios: ${this.datosAcademicos.nivelAlcanzado}</p>
-            <p>Alergias: <span class="text-danger">${formatearArray(this.datosMedicos.alergias)}</span></p>
-        </div>
+    <h6 class="text-primary border-bottom mt-3">Familiares (${this.familiares.length})</h6>
+    ${familiaresHTML}
+
+    <h6 class="text-primary border-bottom mt-3">Dirección</h6>
+    <p>
+        ${this.direccion.calle}<br>
+        ${this.direccion.poblacion}, ${this.direccion.ciudad} (${this.direccion.pais})<br>
+        CP: ${this.direccion.cp}
+    </p>
+
+    <h6 class="text-primary border-bottom mt-3">Datos Académicos</h6>
+    <p>
+        Colegio: ${this.datosAcademicos.colegio}<br>
+        Nivel alcanzado: ${this.datosAcademicos.nivelAlcanzado}<br>
+        Nivel solicitado: ${this.datosAcademicos.nivelSolicitado}<br>
+        Idiomas estudiados: ${lista(this.datosAcademicos.idiomas)}
+    </p>
+
+    <h6 class="text-primary border-bottom mt-3">Información Médica</h6>
+    <p>
+        Alergias: ${lista(this.datosMedicos.alergias)}<br>
+        Medicación: ${this.datosMedicos.medicacion || 'Ninguna'}
+    </p>
     `;
 };
 
-class AlumnoBuilder {
-    constructor() { this.alumno = new Alumno(); }
-    setDatosPersonales(nombre, apellidos, nif, lengua, idiomas) {
-        this.alumno.datosPersonales = { nombre, apellidos, nif, lengua, idiomas };
-        return this;
-    }
-    addFamiliar(nombre, apellidos, nif, profesion, ciudad) {
-        this.alumno.familiares.push({ nombre, apellidos, nif, profesion, ciudad });
-        return this;
-    }
-    setDireccion(pais, ciudad, poblacion, calle, cp) {
-        this.alumno.direccion = { pais, ciudad, poblacion, calle, cp };
-        return this;
-    }
-    setDatosAcademicos(colegio, nivelAlcanzado, idiomas, nivelSolicitado) {
-        this.alumno.datosAcademicos = { colegio, nivelAlcanzado, idiomas, nivelSolicitado };
-        return this;
-    }
-    setDatosMedicos(alergias, medicacion) {
-        this.alumno.datosMedicos = { alergias, medicacion };
-        return this;
-    }
-    build() { return this.alumno; }
+/* =========================================================
+   2. BUILDER
+========================================================= */
+function AlumnoBuilder() {
+    this.alumno = new Alumno();
 }
 
+AlumnoBuilder.prototype.setDatosPersonales = function (nombre, apellidos, nif, lengua, idiomas) {
+    this.alumno.datosPersonales = { nombre, apellidos, nif, lengua, idiomas };
+    return this;
+};
+
+AlumnoBuilder.prototype.addFamiliar = function (nombre, apellidos, nif, profesion, ciudad, lengua, idiomas) {
+    this.alumno.familiares.push({ nombre, apellidos, nif, profesion, ciudad, lengua, idiomas });
+    return this;
+};
+
+AlumnoBuilder.prototype.setDireccion = function (pais, ciudad, poblacion, calle, cp) {
+    this.alumno.direccion = { pais, ciudad, poblacion, calle, cp };
+    return this;
+};
+
+AlumnoBuilder.prototype.setDatosAcademicos = function (colegio, nivelAlcanzado, idiomas, nivelSolicitado) {
+    this.alumno.datosAcademicos = { colegio, nivelAlcanzado, idiomas, nivelSolicitado };
+    return this;
+};
+
+AlumnoBuilder.prototype.setDatosMedicos = function (alergias, medicacion) {
+    this.alumno.datosMedicos = { alergias, medicacion };
+    return this;
+};
+
+AlumnoBuilder.prototype.build = function () {
+    return this.alumno;
+};
+
+/* =========================================================
+   3. VALIDACIONES
+========================================================= */
 const Validaciones = {
-    esNIFValido: (nif) => {
-        const regexNif = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/i;
-        if (!regexNif.test(nif)) return false;
+    esNIFValido(nif) {
+        const regex = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/i;
+        if (!regex.test(nif)) return false;
         const letras = "TRWAGMYFPDXBNJZSQVHLCKE";
         return letras[nif.substr(0, 8) % 23] === nif.substr(8, 1).toUpperCase();
     },
-    esCPValido: (cp) => /^\d{5}$/.test(cp)
-};
-
-// 2. UTILIDADES DOM
-function generarCheckboxes(containerId, arrayDatos, nombreGrupo) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = ''; 
-    arrayDatos.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'form-check';
-        div.innerHTML = `
-            <input class="form-check-input" type="checkbox" value="${item}" id="${nombreGrupo}-${index}">
-            <label class="form-check-label" for="${nombreGrupo}-${index}">${item}</label>
-        `;
-        container.appendChild(div);
-    });
-}
-
-const getCheckboxValues = (containerId) => {
-    return Array.from(document.querySelectorAll(`#${containerId} input:checked`)).map(i => i.value);
-};
-
-function llenarSelect(elementoOId, arrayDatos, placeholder = "Selecciona...") {
-    const select = (typeof elementoOId === 'string') ? document.getElementById(elementoOId) : elementoOId;
-    select.innerHTML = '';
-    const defaultOpt = document.createElement('option');
-    defaultOpt.value = "";
-    defaultOpt.textContent = placeholder;
-    defaultOpt.selected = true;
-    defaultOpt.disabled = true;
-    select.appendChild(defaultOpt);
-    arrayDatos.forEach(item => {
-        const opt = document.createElement('option');
-        opt.value = item; opt.textContent = item;
-        select.appendChild(opt);
-    });
-}
-
-function toggleError(input, esValido, divErrorId, msgError) {
-    // Busca el div de error por ID o intenta buscarlo cerca
-    let div = divErrorId ? document.getElementById(divErrorId) : null;
-    if (!div) div = input.parentElement.nextElementSibling; // Fallback para estructura flotante
-
-    if (!esValido && input.value !== '') {
-        input.classList.add('is-invalid');
-        if(div) div.textContent = msgError;
-    } else {
-        input.classList.remove('is-invalid');
-        if(input.value !== '') input.classList.add('is-valid');
-        if(div) div.textContent = '';
+    esCPValido(cp) {
+        return /^\d{5}$/.test(cp);
     }
+};
+
+function validarCheckboxObligatorio(id, mensaje) {
+    if (document.querySelectorAll(`#${id} input:checked`).length === 0) {
+        alert(mensaje);
+        return false;
+    }
+    return true;
 }
 
-// 3. LÓGICA PRINCIPAL
+/* =========================================================
+   4. UTILIDADES DOM
+========================================================= */
+function llenarSelect(id, datos, placeholder) {
+    const select = document.getElementById(id);
+    select.innerHTML = `<option disabled selected>${placeholder}</option>`;
+    datos.forEach(d => {
+        const o = document.createElement('option');
+        o.value = d;
+        o.textContent = d;
+        select.appendChild(o);
+    });
+}
+
+function generarCheckboxes(id, datos, prefijo) {
+    const c = document.getElementById(id);
+    c.innerHTML = '';
+    datos.forEach((d, i) => {
+        c.innerHTML += `
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="${d}" id="${prefijo}${i}">
+            <label class="form-check-label" for="${prefijo}${i}">${d}</label>
+        </div>`;
+    });
+}
+
+const getCheckboxValues = id =>
+    Array.from(document.querySelectorAll(`#${id} input:checked`)).map(c => c.value);
+
+/* =========================================================
+   5. LÓGICA PRINCIPAL
+========================================================= */
 document.addEventListener('DOMContentLoaded', () => {
-    let datosGlobales = {};
-    let contadorExtras = 0; // Para los IDs de los familiares extra
+
+    let datos;
+    let familiaresTemp = [];
 
     fetch('datos.json')
-        .then(res => res.json())
-        .then(data => {
-            datosGlobales = data;
-            inicializarFormulario(data);
+        .then(r => r.json())
+        .then(json => {
+            datos = json;
+
+            llenarSelect('lenguaMaterna', datos.lenguas, 'Lengua...');
+            llenarSelect('famLengua', datos.lenguas, 'Lengua...');
+            llenarSelect('famProfesion', datos.profesiones, 'Profesión...');
+            llenarSelect('nivelEstudios', datos.nivelesEstudio, 'Nivel...');
+            llenarSelect('nivelSolicitado', datos.nivelesEstudio, 'Nivel...');
+
+            generarCheckboxes('containerIdiomas', datos.idiomas, 'idioma');
+            generarCheckboxes('famIdiomas', datos.idiomas, 'famIdioma');
+            generarCheckboxes('containerIdiomasEstudiados', datos.idiomas, 'idiomaEst');
+            generarCheckboxes('containerAlergias', datos.alergias, 'alergia');
+
+            const pais = document.getElementById('pais');
+            pais.innerHTML = '<option disabled selected>País...</option>';
+            datos.ubicaciones.forEach(u => pais.innerHTML += `<option>${u.pais}</option>`);
+
+            const ciudades = datos.ubicaciones.flatMap(u => u.ciudades.map(c => c.nombre));
+            llenarSelect('famCiudad', ciudades, 'Ciudad...');
         });
 
-    function inicializarFormulario(data) {
-        // --- CARGA ELEMENTOS FIJOS ---
-        llenarSelect('lenguaMaterna', data.lenguas, "Elige lengua...");
-        
-        // Familiar Principal (El Fijo)
-        llenarSelect('famProfesion', data.profesiones, "Elige profesión...");
-        const todasCiudades = data.ubicaciones.flatMap(u => u.ciudades.map(c => c.nombre));
-        llenarSelect('famCiudad', todasCiudades, "Ciudad de nacimiento...");
+    document.getElementById('btnAgregarFamiliar').addEventListener('click', () => {
 
-        // Resto de fijos
-        generarCheckboxes('containerIdiomas', data.idiomas, 'idioma');
-        generarCheckboxes('containerIdiomasEstudiados', data.idiomas, 'idiomaEstudio');
-        generarCheckboxes('containerAlergias', data.alergias, 'alergia');
-        llenarSelect('nivelEstudios', data.nivelesEstudio, "Nivel actual...");
-        llenarSelect('nivelSolicitado', data.nivelesEstudio, "Nivel deseado...");
+        if (!famNombre.value || !famApellidos.value || !famNif.value) {
+            alert('Completa los datos del familiar');
+            return;
+        }
 
-        // País
-        const selectPais = document.getElementById('pais');
-        selectPais.innerHTML = '<option value="" selected disabled>Selecciona País...</option>';
-        data.ubicaciones.forEach(u => {
-            const opt = document.createElement('option');
-            opt.value = u.pais; opt.textContent = u.pais;
-            selectPais.appendChild(opt);
+        if (!validarCheckboxObligatorio('famIdiomas', 'Selecciona idiomas del familiar')) return;
+
+        familiaresTemp.push({
+            nombre: famNombre.value,
+            apellidos: famApellidos.value,
+            nif: famNif.value,
+            profesion: famProfesion.value,
+            ciudad: famCiudad.value,
+            lengua: famLengua.value,
+            idiomas: getCheckboxValues('famIdiomas')
+        });
+
+        actualizarListaFamiliares();
+
+        famNombre.value = '';
+        famApellidos.value = '';
+        famNif.value = '';
+    });
+
+    function actualizarListaFamiliares() {
+        const cont = document.getElementById('listaFamiliares');
+        cont.innerHTML = '';
+        familiaresTemp.forEach((f, i) => {
+            cont.innerHTML += `
+            <div class="alert alert-secondary p-2">
+                <strong>${i === 0 ? 'Principal' : 'Adicional'}:</strong>
+                ${f.nombre} ${f.apellidos} (${f.nif})
+            </div>`;
         });
     }
 
-    // --- FUNCIÓN AÑADIR EXTRA ---
-    document.getElementById('btnAnadirFamiliar').addEventListener('click', () => {
-        contadorExtras++;
-        const id = contadorExtras;
-        const container = document.getElementById('familiaresExtraContainer');
-
-        const card = document.createElement('div');
-        card.className = 'card card-body bg-light mb-3 border shadow-sm familiar-extra'; // clase para identificarlo luego
-        card.innerHTML = `
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h6 class="text-secondary m-0">Familiar Adicional #${id}</h6>
-                <button type="button" class="btn btn-danger btn-sm btn-eliminar-fam">Eliminar</button>
-            </div>
-            <div class="row g-2">
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text" class="form-control fam-extra-nombre" id="extraNombre-${id}" placeholder="Nombre" required>
-                        <label for="extraNombre-${id}">Nombre</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text" class="form-control fam-extra-apellidos" id="extraApellidos-${id}" placeholder="Apellidos" required>
-                        <label for="extraApellidos-${id}">Apellidos</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <input type="text" class="form-control fam-extra-nif" id="extraNif-${id}" placeholder="NIF" required>
-                        <label for="extraNif-${id}">NIF</label>
-                    </div>
-                    <div class="text-danger small ms-1 error-extra-nif"></div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <select class="form-select fam-extra-profesion" id="extraProfesion-${id}"></select>
-                        <label for="extraProfesion-${id}">Profesión</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <select class="form-select fam-extra-ciudad" id="extraCiudad-${id}"></select>
-                        <label for="extraCiudad-${id}">Ciudad Nac.</label>
-                    </div>
-                </div>
-            </div>
-        `;
-        container.appendChild(card);
-
-        // Llenar selects del nuevo card
-        const selProf = card.querySelector('.fam-extra-profesion');
-        const selCiu = card.querySelector('.fam-extra-ciudad');
-        llenarSelect(selProf, datosGlobales.profesiones, "Profesión...");
-        const todasCiudades = datosGlobales.ubicaciones.flatMap(u => u.ciudades.map(c => c.nombre));
-        llenarSelect(selCiu, todasCiudades, "Ciudad...");
-
-        // Evento eliminar
-        card.querySelector('.btn-eliminar-fam').addEventListener('click', () => card.remove());
-
-        // Evento validar NIF Extra
-        const inputNif = card.querySelector('.fam-extra-nif');
-        const divErr = card.querySelector('.error-extra-nif');
-        inputNif.addEventListener('blur', function() {
-            if(!Validaciones.esNIFValido(this.value) && this.value !== '') {
-                this.classList.add('is-invalid');
-                divErr.textContent = 'NIF inválido';
-            } else {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-                divErr.textContent = '';
-            }
-        });
-    });
-
-    // --- EVENTOS ESTÁTICOS ---
-    document.getElementById('nif').addEventListener('blur', function() {
-        toggleError(this, Validaciones.esNIFValido(this.value), 'errorNif', 'NIF inválido');
-    });
-    // Validar NIF del Familiar Principal (Fijo)
-    document.getElementById('famNif').addEventListener('blur', function() {
-        toggleError(this, Validaciones.esNIFValido(this.value), 'errorFamNif', 'NIF inválido');
-    });
-    document.getElementById('cp').addEventListener('blur', function() {
-        toggleError(this, Validaciones.esCPValido(this.value), 'errorCp', 'CP incorrecto (5 dígitos)');
-    });
-
-    // Lógica País->Ciudad->Población (Igual que siempre)
-    document.getElementById('pais').addEventListener('change', (e) => {
-        const c = document.getElementById('ciudad'), p = document.getElementById('poblacion');
-        c.innerHTML='<option disabled selected>Elige Ciudad...</option>'; 
-        p.innerHTML='<option disabled selected>Esperando...</option>';
-        c.disabled=true; p.disabled=true;
-        const paisData = datosGlobales.ubicaciones.find(u => u.pais === e.target.value);
-        if(paisData) {
-            paisData.ciudades.forEach(ci => {
-                const op = document.createElement('option'); op.value=ci.nombre; op.textContent=ci.nombre;
-                c.appendChild(op);
-            });
-            c.disabled=false;
-        }
-    });
-    document.getElementById('ciudad').addEventListener('change', (e) => {
-        const p = document.getElementById('poblacion');
-        p.innerHTML='<option disabled selected>Elige Población...</option>'; p.disabled=true;
-        const paisVal = document.getElementById('pais').value;
-        const cData = datosGlobales.ubicaciones.find(u => u.pais === paisVal)?.ciudades.find(ci => ci.nombre === e.target.value);
-        if(cData) {
-            cData.poblaciones.forEach(po => {
-                const op = document.createElement('option'); op.value=po; op.textContent=po;
-                p.appendChild(op);
-            });
-            p.disabled=false;
-        }
-    });
-
-    // --- SUBMIT ---
-    document.getElementById('formRegistro').addEventListener('submit', (e) => {
+    document.getElementById('formRegistro').addEventListener('submit', e => {
         e.preventDefault();
-        if(document.querySelectorAll('.is-invalid').length > 0) {
-            alert("Corrige los campos en rojo"); return;
-        }
 
-        const builder = new AlumnoBuilder();
-        
-        // 1. Datos Personales
-        builder.setDatosPersonales(
-            document.getElementById('nombre').value,
-            document.getElementById('apellidos').value,
-            document.getElementById('nif').value,
-            document.getElementById('lenguaMaterna').value,
+        if (!validarCheckboxObligatorio('containerIdiomas', 'Selecciona idiomas del alumno')) return;
+        if (!validarCheckboxObligatorio('containerIdiomasEstudiados', 'Selecciona idiomas estudiados')) return;
+
+        const b = new AlumnoBuilder();
+
+        b.setDatosPersonales(
+            nombre.value,
+            apellidos.value,
+            nif.value,
+            lenguaMaterna.value,
             getCheckboxValues('containerIdiomas')
         );
 
-        // 2. FAMILIARES
-        
-        // A) Añadimos el Familiar Principal (el fijo)
-        builder.addFamiliar(
-            document.getElementById('famNombre').value,
-            document.getElementById('famApellidos').value,
-            document.getElementById('famNif').value,
-            document.getElementById('famProfesion').value,
-            document.getElementById('famCiudad').value
-        );
-
-        // B) Añadimos los Familiares Extras (si hay)
-        const extras = document.querySelectorAll('.familiar-extra');
-        extras.forEach(card => {
-            builder.addFamiliar(
-                card.querySelector('.fam-extra-nombre').value,
-                card.querySelector('.fam-extra-apellidos').value,
-                card.querySelector('.fam-extra-nif').value,
-                card.querySelector('.fam-extra-profesion').value,
-                card.querySelector('.fam-extra-ciudad').value
+        familiaresTemp.forEach(f => {
+            b.addFamiliar(
+                f.nombre,
+                f.apellidos,
+                f.nif,
+                f.profesion,
+                f.ciudad,
+                f.lengua,
+                f.idiomas
             );
         });
 
-        // 3. Resto de datos
-        builder.setDireccion(
-            document.getElementById('pais').value,
-            document.getElementById('ciudad').value,
-            document.getElementById('poblacion').value,
-            document.getElementById('direccion').value,
-            document.getElementById('cp').value
-        );
-        builder.setDatosAcademicos(
-            document.getElementById('colegio').value,
-            document.getElementById('nivelEstudios').value,
-            getCheckboxValues('containerIdiomasEstudiados'),
-            document.getElementById('nivelSolicitado').value
-        );
-        builder.setDatosMedicos(
-            getCheckboxValues('containerAlergias'),
-            document.getElementById('medicacion').value
+        b.setDireccion(
+            pais.value,
+            ciudad.value,
+            poblacion.value,
+            direccion.value,
+            cp.value
         );
 
-        document.getElementById('cuerpoModal').innerHTML = builder.build().generarResumenHTML();
-        new bootstrap.Modal(document.getElementById('modalResumen')).show();
+        b.setDatosAcademicos(
+            colegio.value,
+            nivelEstudios.value,
+            getCheckboxValues('containerIdiomasEstudiados'),
+            nivelSolicitado.value
+        );
+
+        b.setDatosMedicos(
+            getCheckboxValues('containerAlergias'),
+            medicacion.value
+        );
+
+        document.getElementById('cuerpoModal').innerHTML = b.build().generarResumenHTML();
+        new bootstrap.Modal(modalResumen).show();
     });
 });
