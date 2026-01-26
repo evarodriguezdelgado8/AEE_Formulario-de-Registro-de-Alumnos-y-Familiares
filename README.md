@@ -11,6 +11,14 @@ Para visualizarlo correctamente:
 2. Utilizar la extensión **Live Server**.
 3. Hacer clic en "Go Live" o clic derecho sobre `index.html` > **Open with Live Server**.
 
+O también:
+### Ejecución con XAMPP
+1.  Asegúrese de tener **XAMPP** instalado y el servicio **Apache** iniciado (botón "Start").
+2.  Copie la carpeta del proyecto dentro del directorio público de XAMPP:
+    * Ruta típica: `C:\xampp\htdocs\AEE_Formulario-de-Registro-de-Alumnos-y-Familiares`
+3.  Abra su navegador web y acceda a la ruta local:
+    * URL: `http://localhost/AEE_Formulario-de-Registro-de-Alumnos-y-Familiares`
+
 ## 🛠️ Tecnologías y Conceptos Aplicados
 
 ### 1. Carga de Datos (AJAX/Fetch)
@@ -46,4 +54,4 @@ Se han implementado validaciones robustas sin el uso de `alert()`, integrando el
 **Curso:** Desarrollo de Aplicaciones Web  
 **Módulo:** Desarrollo Web en Entorno Cliente (DWEC)  
 **Profesor:** Carlos Basulto Pardo  
-**Alumno:** [Tu Nombre Aquí]
+**Alumno:** EVa Rodríguez Delgado
